@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import ListAPIView
@@ -24,6 +24,8 @@ class MealViewSet(mixins.CreateModelMixin,
     queryset = Meal.objects.prefetch_related("ingredients")
     serializer_class = MealSerializer
     authentication_classes = [JWTAuthentication]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'category__name']
 
     def get_permissions(self):
         if self.action in ["create", "update"]:
@@ -59,6 +61,8 @@ class SubcategoryViewSet(mixins.CreateModelMixin,
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
     authentication_classes = [SessionAuthentication]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'parent__name']
 
     def get_permissions(self):
         if self.action in ["create", "update"]:
