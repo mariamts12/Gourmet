@@ -6,7 +6,16 @@ from .models import Ingredient, MainCategory, Meal, Restaurant, Subcategory
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ["id", "name"]
+        fields = "__all__"
+
+    def get_fields(self):
+        fields = super().get_fields()
+        action = self.context.get("view").action
+
+        if action not in ["create", "update"]:
+            fields_to_keep = ["id", "name"]
+            fields = {key: fields[key] for key in fields_to_keep}
+        return fields
 
     def create(self, validated_data):
         restaurant = Restaurant(
@@ -29,7 +38,6 @@ class MainCategorySerializer(serializers.ModelSerializer):
         action = self.context.get("view").action
 
         if action not in ["create", "update"]:
-            # Keep only 'id' and 'name' for non-create/update actions
             fields_to_keep = ["id", "name"]
             fields = {key: fields[key] for key in fields_to_keep}
 
@@ -60,7 +68,6 @@ class SubcategorySerializer(serializers.ModelSerializer):
         action = self.context.get("view").action
 
         if action not in ["create", "update"]:
-            # Keep only 'id' and 'name' for non-create/update actions
             fields_to_keep = ["name", "cover_photo"]
             fields = {key: fields[key] for key in fields_to_keep}
 
@@ -107,7 +114,6 @@ class MealSerializer(serializers.ModelSerializer):
         action = self.context.get("view").action
 
         if action not in ["create", "update"]:
-            # Keep only 'id' and 'name' for non-create/update actions
             fields_to_keep = ["name", "photo", "ingredients"]
             fields = {key: fields[key] for key in fields_to_keep}
 

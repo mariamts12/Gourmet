@@ -10,10 +10,19 @@ from .serializers import (MainCategorySerializer, MealSerializer,
                           RestaurantSerializer, SubcategorySerializer)
 
 
-class RestaurantsView(ListAPIView):
+class RestaurantsViewSet(mixins.CreateModelMixin,
+                         mixins.RetrieveModelMixin,
+                         mixins.UpdateModelMixin,
+                         mixins.ListModelMixin,
+                         GenericViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     authentication_classes = [SessionAuthentication]
+
+    def get_permissions(self):
+        if self.action in ["create", "update"]:
+            return [IsAuthenticated()]
+        return [AllowAny()]
 
 
 class MealViewSet(
@@ -32,7 +41,6 @@ class MealViewSet(
     def get_permissions(self):
         if self.action in ["create", "update"]:
             return [IsAuthenticated()]
-        # Allow any user for listing and retrieving
         return [AllowAny()]
 
     def get_view_name(self):
@@ -53,7 +61,6 @@ class MainCategoryViewSet(
     def get_permissions(self):
         if self.action in ["create", "update"]:
             return [IsAuthenticated()]
-        # Allow any user for listing and retrieving
         return [AllowAny()]
 
 
@@ -73,5 +80,4 @@ class SubcategoryViewSet(
     def get_permissions(self):
         if self.action in ["create", "update"]:
             return [IsAuthenticated()]
-        # Allow any user for listing and retrieving
         return [AllowAny()]
