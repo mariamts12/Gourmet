@@ -1,19 +1,19 @@
 from rest_framework import serializers
 
-from .models import Restaurant, MainCategory, Subcategory, Meal, Ingredient
+from .models import Ingredient, MainCategory, Meal, Restaurant, Subcategory
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
     def create(self, validated_data):
         restaurant = Restaurant(
             name=validated_data["name"],
             address=validated_data["address"],
             phone_number=validated_data["phone_number"],
-            cover_photo=validated_data["cover_photo"]
+            cover_photo=validated_data["cover_photo"],
         )
         restaurant.save()
         return restaurant
@@ -26,26 +26,25 @@ class MainCategorySerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
-        action = self.context.get('view').action
+        action = self.context.get("view").action
 
-        if action not in ['create', 'update']:
+        if action not in ["create", "update"]:
             # Keep only 'id' and 'name' for non-create/update actions
-            fields_to_keep = ['id', 'name']
+            fields_to_keep = ["id", "name"]
             fields = {key: fields[key] for key in fields_to_keep}
 
         return fields
 
     def create(self, validated_data):
         category = MainCategory(
-            name=validated_data["name"],
-            restaurant=validated_data["restaurant"]
+            name=validated_data["name"], restaurant=validated_data["restaurant"]
         )
         category.save()
         return category
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.restaurant = validated_data.get('restaurant', instance.photo)
+        instance.name = validated_data.get("name", instance.name)
+        instance.restaurant = validated_data.get("restaurant", instance.photo)
         instance.save()
 
         return instance
@@ -58,11 +57,11 @@ class SubcategorySerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
-        action = self.context.get('view').action
+        action = self.context.get("view").action
 
-        if action not in ['create', 'update']:
+        if action not in ["create", "update"]:
             # Keep only 'id' and 'name' for non-create/update actions
-            fields_to_keep = ['name', 'cover_photo']
+            fields_to_keep = ["name", "cover_photo"]
             fields = {key: fields[key] for key in fields_to_keep}
 
         return fields
@@ -71,15 +70,15 @@ class SubcategorySerializer(serializers.ModelSerializer):
         sub = Subcategory(
             name=validated_data["name"],
             cover_photo=validated_data["cover_photo"],
-            parent=validated_data["parent"]
+            parent=validated_data["parent"],
         )
         sub.save()
         return sub
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.cover_photo = validated_data.get('cover_photo', instance.cover_photo)
-        instance.parent = validated_data.get('parent', instance.parent)
+        instance.name = validated_data.get("name", instance.name)
+        instance.cover_photo = validated_data.get("cover_photo", instance.cover_photo)
+        instance.parent = validated_data.get("parent", instance.parent)
         instance.save()
 
         return instance
@@ -91,9 +90,7 @@ class IngredientsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        ingredient = Ingredient(
-            name=validated_data["name"]
-        )
+        ingredient = Ingredient(name=validated_data["name"])
         ingredient.save()
         return ingredient
 
@@ -107,11 +104,11 @@ class MealSerializer(serializers.ModelSerializer):
 
     def get_fields(self):
         fields = super().get_fields()
-        action = self.context.get('view').action
+        action = self.context.get("view").action
 
-        if action not in ['create', 'update']:
+        if action not in ["create", "update"]:
             # Keep only 'id' and 'name' for non-create/update actions
-            fields_to_keep = ['name', 'photo', 'ingredients']
+            fields_to_keep = ["name", "photo", "ingredients"]
             fields = {key: fields[key] for key in fields_to_keep}
 
         return fields
@@ -127,16 +124,4 @@ class MealSerializer(serializers.ModelSerializer):
         return meal
 
     def update(self, instance, validated_data):
-        # ingredients_data = validated_data.pop('ingredients', [])
-        # instance.name = validated_data.get('name', instance.name)
-        # instance.photo = validated_data.get('photo', instance.photo)
-        # instance.price = validated_data.get('price', instance.price)
-        # instance.category = validated_data.get('category', instance.category)
-        # instance.save()
-        #
-        # # Clear old ingredients and add new ones
-        # instance.ingredients.all().delete()
-        # for ingredient_data in ingredients_data:
-        #     Ingredient.objects.create(dish=instance, **ingredient_data)
-        # return instance
         pass

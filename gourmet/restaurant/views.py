@@ -2,12 +2,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import GenericViewSet
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .models import Restaurant, Meal, MainCategory, Subcategory
-from .serializers import RestaurantSerializer, MealSerializer, MainCategorySerializer, SubcategorySerializer
+from .models import MainCategory, Meal, Restaurant, Subcategory
+from .serializers import (MainCategorySerializer, MealSerializer,
+                          RestaurantSerializer, SubcategorySerializer)
 
 
 class RestaurantsView(ListAPIView):
@@ -16,16 +16,18 @@ class RestaurantsView(ListAPIView):
     authentication_classes = [SessionAuthentication]
 
 
-class MealViewSet(mixins.CreateModelMixin,
-                  mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.ListModelMixin,
-                  GenericViewSet):
+class MealViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Meal.objects.prefetch_related("ingredients")
     serializer_class = MealSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [SessionAuthentication]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'category__name']
+    filterset_fields = ["name", "category__name"]
 
     def get_permissions(self):
         if self.action in ["create", "update"]:
@@ -37,11 +39,13 @@ class MealViewSet(mixins.CreateModelMixin,
         return "Menu"
 
 
-class MainCategoryViewSet(mixins.CreateModelMixin,
-                          mixins.RetrieveModelMixin,
-                          mixins.UpdateModelMixin,
-                          mixins.ListModelMixin,
-                          GenericViewSet):
+class MainCategoryViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = MainCategory.objects.all()
     serializer_class = MainCategorySerializer
     authentication_classes = [SessionAuthentication]
@@ -53,16 +57,18 @@ class MainCategoryViewSet(mixins.CreateModelMixin,
         return [AllowAny()]
 
 
-class SubcategoryViewSet(mixins.CreateModelMixin,
-                         mixins.RetrieveModelMixin,
-                         mixins.UpdateModelMixin,
-                         mixins.ListModelMixin,
-                         GenericViewSet):
+class SubcategoryViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     queryset = Subcategory.objects.all()
     serializer_class = SubcategorySerializer
     authentication_classes = [SessionAuthentication]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', 'parent__name']
+    filterset_fields = ["name", "parent__name"]
 
     def get_permissions(self):
         if self.action in ["create", "update"]:

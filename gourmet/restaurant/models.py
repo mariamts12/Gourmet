@@ -29,6 +29,8 @@ class Ingredient(models.Model):
 class Meal(models.Model):
     name = models.CharField(max_length=100)
     photo = VersatileImageField(upload_to="meals/", null=True, blank=True)
-    price = models.DecimalField(validators=[MinValueValidator(0)], decimal_places=2, max_digits=5)
+    price = models.DecimalField(
+        validators=[MinValueValidator(0)], decimal_places=2, max_digits=5
+    )
     category = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Ingredient)

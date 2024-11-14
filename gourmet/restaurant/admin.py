@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Restaurant, MainCategory, Subcategory, Meal, Ingredient
+from .models import Ingredient, MainCategory, Meal, Restaurant, Subcategory
 
 
 # Register your models here.
@@ -27,5 +27,3 @@ class MealAdmin(admin.ModelAdmin):
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     pass
-
-

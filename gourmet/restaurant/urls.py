@@ -1,13 +1,14 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import MealViewSet, RestaurantsView, MainCategoryViewSet, SubcategoryViewSet
+from .views import (MainCategoryViewSet, MealViewSet, RestaurantsView,
+                    SubcategoryViewSet)
 
 app_name = "restaurant"
 router = DefaultRouter()
-router.register(r'meals', MealViewSet, basename="meals")
-router.register(r'categories', MainCategoryViewSet, basename="categories")
-router.register(r'subcategories', SubcategoryViewSet, basename="subcategories")
+router.register(r"meals", MealViewSet, basename="meals")
+router.register(r"categories", MainCategoryViewSet, basename="categories")
+router.register(r"subcategories", SubcategoryViewSet, basename="subcategories")
 
 urlpatterns = [
     path("restaurants/", RestaurantsView.as_view(), name="restaurants"),
